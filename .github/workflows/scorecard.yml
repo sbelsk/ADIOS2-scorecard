@@ -1,0 +1,37 @@
+name: ADIOS2-scorecard
+run-name: Running Scorecard on ADIOS2
+on:
+  push:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  run-scorecard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '>=1.17.0'
+
+      - name: Fetch scorecard tool
+        run: curl -LO https://github.com/ossf/scorecard/releases/download/v5.3.0/scorecard_5.3.0_linux_amd64.tar.gz
+
+      - name: Extract scorecard tool
+        run: |
+          mkdir -p ./scorecard_5.3.0
+          tar -xf scorecard_5.3.0_linux_amd64.tar.gz -C ./scorecard_5.3.0
+
+      - name: Run the scorecard analysis on ornladios/ADIOS2
+        continue-on-error: true
+        run: |
+          ./scorecard_5.3.0/scorecard -o ./adios2-ossf-scorecard.txt --repo ornladios/ADIOS2 || true
+          cat ./adios2-ossf-scorecard.txt
+        env:
+          GITHUB_AUTH_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Upload scorecard report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: adios2-scorecard-report
+          path: ./adios2-ossf-scorecard.txt
