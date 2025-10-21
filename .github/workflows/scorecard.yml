@@ -25,7 +25,7 @@ jobs:
       - name: Run the scorecard analysis on ornladios/ADIOS2
         continue-on-error: true
         run: |
-          ./scorecard_5.3.0/scorecard -o ./adios2-ossf-scorecard.txt --repo ornladios/ADIOS2 || true
+          ./scorecard_5.3.0/scorecard -o ./adios2-ossf-scorecard.txt --repo ornladios/ADIOS2 --verbosity debug --show-details || true
           cat ./adios2-ossf-scorecard.txt
         env:
           GITHUB_AUTH_TOKEN: ${{ secrets.GH_PAT }}
