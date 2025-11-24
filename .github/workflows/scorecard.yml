@@ -2,8 +2,6 @@ name: ADIOS2-scorecard
 run-name: Running Scorecard on ADIOS2
 on:
   push:
-  schedule:
-    - cron: '0 * * * *'
 
 jobs:
   run-scorecard:
